@@ -1,0 +1,20 @@
+language: go
+
+go:
+  - 1.5
+  - 1.6
+  - tip
+
+install:
+  - true
+
+before_script:
+  - go get -u github.com/alecthomas/gometalinter
+  - gometalinter -i
+
+script:
+  - gometalinter
+  - go test -coverprofile=coverage.txt -covermode=atomic
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
