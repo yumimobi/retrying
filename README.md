@@ -24,7 +24,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/on99/retry"
+	"github.com/yumimobi/retrying"
 )
 
 func init() {
@@ -32,7 +32,7 @@ func init() {
 }
 
 func main() {
-	err := retry.New().
+	err := retrying.New().
 		Stack(2048, true).
 		MaxAttemptTimes(5).
 		Function(func() error {
