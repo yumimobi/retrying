@@ -178,7 +178,7 @@ func (r *Retryable) wait() {
 
 func (r *Retryable) tryWithTimeout() error {
 	errors := &multierror.Error{}
-	errChan := make(chan error)
+	errChan := make(chan error, r.maxAttemptTimes)
 	timer := time.NewTimer(r.maxDelay)
 	count := r.maxAttemptTimes
 
