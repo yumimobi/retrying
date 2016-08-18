@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"reflect"
 	"runtime"
+	"sync/atomic"
 	"time"
 
 	"github.com/hashicorp/go-multierror"
@@ -31,7 +32,7 @@ type Retryable struct {
 	stackSize     int
 	allGoroutines bool
 
-	maxAttemptTimes int
+	maxAttemptTimes int64
 	maxDelay        time.Duration
 
 	waitFixed                    time.Duration
@@ -62,7 +63,7 @@ func (r *Retryable) Stack(n int, all bool) *Retryable {
 }
 
 // MaxAttemptTimes set max attempt times
-func (r *Retryable) MaxAttemptTimes(n int) *Retryable {
+func (r *Retryable) MaxAttemptTimes(n int64) *Retryable {
 	if n <= 0 {
 		r.errors = append(r.errors, fmt.Errorf("max attempt times must be positive integer"))
 	}
@@ -183,7 +184,8 @@ func (r *Retryable) tryWithTimeout() error {
 	count := r.maxAttemptTimes
 
 	go func() {
-		for ; count > 0; count-- {
+		for atomic.LoadInt64(&count) > 0 {
+			atomic.AddInt64(&count, -1)
 			errChan <- r.f()
 			r.wait()
 		}
@@ -198,7 +200,7 @@ func (r *Retryable) tryWithTimeout() error {
 				return nil
 			}
 
-			if count <= 0 {
+			if atomic.LoadInt64(&count) <= 0 {
 				return errors.ErrorOrNil()
 			}
 		case <-timer.C:
