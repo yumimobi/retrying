@@ -197,6 +197,7 @@ func (r *Retryable) tryWithTimeout() error {
 			errors = multierror.Append(errors, err)
 
 			if err == nil {
+				atomic.StoreInt64(&count, 0)
 				return nil
 			}
 
