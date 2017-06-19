@@ -1,8 +1,6 @@
 # retrying
 Retrying is a golang binding of python retrying library https://github.com/rholder/retrying
 
-====
-
 [![Build Status](https://travis-ci.org/yumimobi/retrying.svg?branch=master)](https://travis-ci.org/yumimobi/retrying)
 [![Go Report Card](http://goreportcard.com/badge/yumimobi/retrying)](http://goreportcard.com/report/yumimobi/retrying)
 [![codecov](https://codecov.io/gh/yumimobi/retrying/branch/master/graph/badge.svg)](https://codecov.io/gh/yumimobi/retrying)
